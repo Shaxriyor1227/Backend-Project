@@ -27,13 +27,14 @@ const updateStuffValidationSchema = Joi.object({
 });
 
 const loginValidationSchema = Joi.object({
-    login: Joi.string().required().min(3).max(30),
+    login: Joi.string().min(3).max(30),
+    phoneNumber: Joi.string().min(10).max(18),
     parol: Joi.string()
            .required()
            .min(6)
            .pattern(
                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{6,}$/
            )
-});
+}).xor("login", "phoneNumber");
 
 module.exports = { registerValidationSchema, updateStuffValidationSchema, loginValidationSchema };

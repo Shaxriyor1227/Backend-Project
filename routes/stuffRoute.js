@@ -88,13 +88,16 @@ stuff.post("/register", validateSchema(registerValidationSchema), postRegister);
  *             properties:
  *               login:
  *                 type: string
- *                 description: Xodimning login
+ *                 description: Xodimning login (login yoki phoneNumber kiritilishi kerak)
+ *               phoneNumber:
+ *                 type: string
+ *                 description: Xodimning telefon raqami
  *               parol:
  *                 type: string
  *                 description: Xodimning paroli
  *     responses:
- *       "201":
- *         description: Xodim muvaffaqiyatli ro'yhatdan o'tdi
+ *       "200":
+ *         description: Tizimga muvaffaqiyatli kirildi va token qaytarildi
  *       "400":
  *         description: Yomon so'rov, validatsiya xatosi
  *       "500":

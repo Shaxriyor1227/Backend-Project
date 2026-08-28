@@ -63,7 +63,7 @@ const getAllLids = async (req, res) => {
         console.error("Error fetching lids:", error);
         res.status(500).json({
             success: false,
-            message: "Server xatosi: L西部larni olishda xato yuz berdi.",
+            message: "Server xatosi: Lidslarni olishda xato yuz berdi.",
         });
     }
 };
