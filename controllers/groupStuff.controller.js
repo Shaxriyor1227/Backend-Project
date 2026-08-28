@@ -42,7 +42,7 @@ const createGroupStuff = async (req, res) => {
 // ----------------Get GroupStuff------------------------
 const getAllGroupStuff = async (req, res) => {
     try {
-        const list = await GroupStuff.find({}).populate("stuff_id");
+        const list = await GroupStuff.find({}).populate("stuff_id").populate("group_id")
         res.json({
             success: true,
             message: "Barcha guruh-xodim bog'lanishlari ro'yxati olingan.",
@@ -61,7 +61,7 @@ const getAllGroupStuff = async (req, res) => {
 const getGroupStuffById = async (req, res) => {
     try {
         const id = req.params.id;
-        const item = await GroupStuff.findById(id).populate("stuff_id");
+        const item = await GroupStuff.findById(id).populate("stuff_id").populate("group_id")
 
         if (!item) {
             return res.status(404).json({ message: "GroupStuff not found" });

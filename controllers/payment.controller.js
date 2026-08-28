@@ -1,4 +1,5 @@
 const { Payment } = require("../model/paymentSchema");
+const { Student } = require("../model/studentSchema");
 
 // ----------------Create Payment------------------------
 const createPayment = async (req, res) => {
@@ -121,10 +122,51 @@ const deletePayment = async (req, res) => {
     }
 };
 
+// -------------------search Payment-------------------
+const searchPayment = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        if (!query || typeof query !== "string") {
+            return res.status(400).json({ message: "Invalid search query." });
+        }
+
+        const matchingStudents = await Student.find({
+            $or: [
+                { first_name: { $regex: query, $options: "i" } },
+                { last_name: { $regex: query, $options: "i" } },
+                { phone_number: { $regex: query, $options: "i" } },
+            ],
+        }).select("_id");
+
+        const studentIds = matchingStudents.map((s) => s._id);
+
+        const conditions = [{ student_id: { $in: studentIds } }];
+
+        if (!isNaN(query)) {
+            conditions.push({ price: Number(query) });
+        }
+
+        const result = await Payment.find({
+            $or: conditions,
+        }).populate("student_id");
+
+        if (result.length === 0) {
+            return res.json({ message: "Bunday to'lov topilmadi", innerData: [] });
+        }
+
+        res.json({ message: "Search results", innerData: result });
+    } catch (error) {
+        console.error("Error searching payments:", error);
+        res.status(500).json({ message: "Server error: Failed to fetch payments." });
+    }
+};
+
 module.exports = {
     createPayment,
     getAllPayments,
     getPaymentById,
     updatePayment,
     deletePayment,
+    searchPayment,
 };
