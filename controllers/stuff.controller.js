@@ -34,10 +34,13 @@ const postRegister = async (req, res) => {
 
             await newStuff.save();
 
+            const stuffResponse = newStuff.toObject();
+            delete stuffResponse.parol;
+
             return res.status(201).json({
                 success: true,
                 message: "Xodim muvaffaqiyatli ro'yhatdan o'tdi.",
-                innerData: newStuff,
+                innerData: stuffResponse,
             });
         }
     } catch (error) {
@@ -52,7 +55,7 @@ const postRegister = async (req, res) => {
 // ----------------Get Stuff------------------------
 const getStuff = async (req, res) => {
     try {
-        const stuff = await Stuff.find({});
+        const stuff = await Stuff.find({}).select("-parol");
         res.json({
             success: true,
             message: "Barcha xodimlar ro'yxati olingan.",
@@ -71,7 +74,7 @@ const getStuff = async (req, res) => {
 const getStuffById = async (req, res) => {
     try {
         const stuffId = req.params.id;
-        const stuff = await Stuff.findById(stuffId);
+        const stuff = await Stuff.findById(stuffId).select("-parol");
 
         if (!stuff) {
             return res.status(404).json({ message: "Stuff not found" });
@@ -98,7 +101,7 @@ const updateStuff = async (req, res) => {
             stuffId,
             updateData,
             { new: true, runValidators: true }
-        );
+        ).select("-parol");
 
         if (!updatedStuff) {
             return res.status(404).json({
@@ -125,7 +128,7 @@ const updateStuff = async (req, res) => {
 const deleteStuff = async (req, res) => {
     try {
         const stuffId = req.params.id;
-        const deletedStuff = await Stuff.findByIdAndDelete(stuffId);
+        const deletedStuff = await Stuff.findByIdAndDelete(stuffId).select("-parol");
 
         if (!deletedStuff) {
             return res.status(404).json({ message: "Stuff not found" });
@@ -154,7 +157,7 @@ const searchStuff = async (req, res) => {
                 { phoneNumber: { $regex: query, $options: "i" } },
                 { login: { $regex: query, $options: "i" } },
             ],
-        });
+        }).select("-parol");
 
         if (result.length === 0) {
             return res.json({ message: "Bunday xodim topilmadi" });

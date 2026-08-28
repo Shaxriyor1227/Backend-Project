@@ -51,7 +51,9 @@ const createStuffRole = async (req, res) => {
 // ----------------Get StuffRoles------------------------
 const getAllStuffRole = async (req, res) => {
     try {
-        const list = await StuffRole.find({}).populate("stuff_id").populate("role_id");
+        const list = await StuffRole.find({})
+            .populate({ path: "stuff_id", select: "-parol" })
+            .populate("role_id");
         res.json({
             success: true,
             message: "Barcha xodim-rol bog'lanishlari ro'yxati olingan.",
@@ -70,7 +72,9 @@ const getAllStuffRole = async (req, res) => {
 const getStuffRoleById = async (req, res) => {
     try {
         const id = req.params.id;
-        const item = await StuffRole.findById(id).populate("stuff_id").populate("role_id");
+        const item = await StuffRole.findById(id)
+            .populate({ path: "stuff_id", select: "-parol" })
+            .populate("role_id");
 
         if (!item) {
             return res.status(404).json({ message: "StuffRole not found" });
